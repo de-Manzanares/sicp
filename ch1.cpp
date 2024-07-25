@@ -153,7 +153,7 @@ double approximate_cube_root(double const guess, double const x,
   return approx;
 }
 
-#define FIND_CUBE_ROOT_Y
+#define FIND_CUBE_ROOT_N
 #ifdef FIND_CUBE_ROOT_Y
 
 int main() {
@@ -161,5 +161,72 @@ int main() {
           " iterations");
   return 0;
 }
+
+#endif
+
+/* linear recursive process - number of calls grows linearly with n
+ * the expansion of this process builds up a chain of deferred operations
+ * the chain begins to shrink only after we reach the base case
+ */
+std::size_t factorial_recursive(std::size_t const n) { // NOLINT
+  if (n == 1) {
+    return 1;
+  }
+  return n * factorial_recursive(n - 1);
+}
+
+/* linear iterative process - number of iterations grows linearly with n
+ * sumarized by a fixed number of state variables and fixed rules on how to
+ * modify the variables to reach the next state
+ */
+std::size_t factorial_iterative(std::size_t const n) {
+  std::size_t it = 2;     // iteration
+  std::size_t result = 1; // result of factorial
+
+  while (it <= n) {
+    result = result * it;
+    ++it;
+  }
+
+  return result;
+}
+
+#define FACTORIAL_RECvITER_N
+#ifdef FACTORIAL_RECvITER_Y
+
+int main() {
+  println(factorial_recursive(5));
+  println(factorial_iterative(5));
+  return 0;
+}
+
+#endif
+
+/*
+ * an iterative process can be implemented on basic hardware - the state
+ * variables give all the nessecary information. a recursive process requires
+ * that the hardware has a stack - a mechanism to keep track of the implicit
+ * state "where are we in the process of recursion"
+ */
+
+//***************** EXERCISE 1.10 ACKERMANN'S FUNCTION
+
+double A(double x, double y) { // NOLINT
+  if (y == 0) {
+    return 0;
+  }
+  if (x == 0) {
+    return 2 * y;
+  }
+  if (y == 1) {
+    return 2;
+  }
+  return A(x - 1, A(x, y - 1));
+}
+
+#define ACKERMANNS_Y
+#ifdef ACKERMANNS_Y
+
+int main() { println(A(3, 4)); } // LOL
 
 #endif
